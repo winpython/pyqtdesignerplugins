@@ -1,0 +1,13 @@
+\.pyc$
+\.pyo$
+\.settings$
+\.spyderproject$
+\.ropeproject$
+\.orig$
+\.DS_Store$
+^build/
+^dist/
+^bin/
+^pyqtdesignerplugins.egg-info/
+MANIFEST$
+\Thumbs.db

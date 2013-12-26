@@ -13,13 +13,18 @@ def get_data_files(dirname):
             flist.append(osp.join(dirpath, fname))
     return flist
 
-setup(name='PyQtdesignerplugins', version='1.0',
-      description='PyQtdesignerplugins installs Qt Designer plugins for PyQt4',
-      long_description="""PyQtdesignerplugins installs Python Qt designer plugins (Matplotlib, guiqwt, ...) in PyQt4 directory""", 
+PROJECT_NAME = 'PyQtdesignerplugins'
+
+setup(name=PROJECT_NAME, version='1.1',
+      description='%s installs Qt Designer plugins for PyQt4' % PROJECT_NAME,
+      long_description="""%s installs Python Qt designer plugins (Matplotlib, guiqwt, ...) in PyQt4 directory.
+
+%s is part of the WinPython distribution project.
+""" % (PROJECT_NAME, PROJECT_NAME), 
       py_modules = ['matplotlibwidget'],
       data_files=[(r'Lib\site-packages\PyQt4\plugins\designer\python', get_data_files('plugins'))],
       requires=["PyQt4 (>4.3)",],
       author = "Pierre Raybaut",
       author_email = 'pierre.raybaut@gmail.com',
-      url = 'http://code.google.com/p/winpython/',
+      url = 'http://winpython.sourceforge.net/',
       classifiers=['Operating System :: Microsoft :: Windows'])

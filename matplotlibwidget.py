@@ -7,21 +7,51 @@
 MatplotlibWidget
 ================
 
-Example of matplotlib widget for PyQt4
+Example of matplotlib widget for PyQt4 and PyQt5
 
 Copyright © 2009 Pierre Raybaut
 This software is licensed under the terms of the MIT License
 
 Derived from 'embedding_in_pyqt4.py':
 Copyright © 2005 Florent Rougon, 2006 Darren Dale
+
+Updated for PyQt5 compatibility by Jérémy Goutin, 2015
 """
+__version__ = "1.1.0"
 
-__version__ = "1.0.0"
+import sys
 
-from PyQt4.QtGui import QSizePolicy
-from PyQt4.QtCore import QSize
+# =============================================================================
+#   Example - Part 1 : Initialize PyQt (By importing Widjets for Part 2)
+#                      Initialize Matplotlib for PyQt5 if needed
+# =============================================================================
+if __name__ == '__main__':
+    try:
+        # Use PyQt5 if present
+        from PyQt5.QtWidgets import QMainWindow, QApplication
+        import matplotlib
+        matplotlib.use("Qt5Agg")
+        print("Running Example with PyQt5...")
+    except:
+        # Else, use PyQt4
+        from PyQt4.QtGui import QMainWindow, QApplication
+        print("Running Example with PyQt4...")
+# =============================================================================
+#   End Example - Part 1
+# =============================================================================
 
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as Canvas
+# Import PyQt Widgets and Matplotlib canvas for actually used PyQt version
+if "PyQt5" in sys.modules:
+    from PyQt5.QtWidgets import QSizePolicy
+    from PyQt5.QtCore import QSize
+    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Canvas
+elif "PyQt4" in sys.modules:
+    from PyQt4.QtGui import QSizePolicy
+    from PyQt4.QtCore import QSize
+    from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as Canvas
+else:
+    raise SystemError("PyQt4 or PyQt5 need to be imported first")
+
 from matplotlib.figure import Figure
 
 from matplotlib import rcParams
@@ -30,11 +60,11 @@ rcParams['font.size'] = 9
 
 class MatplotlibWidget(Canvas):
     """
-    MatplotlibWidget inherits PyQt4.QtGui.QWidget
+    MatplotlibWidget inherits PyQt4.QtGui.QWidget or PyQt5.QtWidgets.QWidget
     and matplotlib.backend_bases.FigureCanvasBase
-    
+
     Options: option_name (default_value)
-    -------    
+    -------
     parent (None): parent widget
     title (''): figure title
     xlabel (''): X-axis label
@@ -47,12 +77,12 @@ class MatplotlibWidget(Canvas):
     height (3): height in inches
     dpi (100): resolution in dpi
     hold (False): if False, figure will be cleared each time plot is called
-    
+
     Widget attributes:
     -----------------
     figure: instance of matplotlib.figure.Figure
     axes: figure axes
-    
+
     Example:
     -------
     self.widget = MatplotlibWidget(self, yscale='log', hold=True)
@@ -82,7 +112,8 @@ class MatplotlibWidget(Canvas):
         Canvas.__init__(self, self.figure)
         self.setParent(parent)
 
-        Canvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
+        Canvas.setSizePolicy(self, QSizePolicy.Expanding,
+                             QSizePolicy.Expanding)
         Canvas.updateGeometry(self)
 
     def sizeHint(self):
@@ -92,16 +123,12 @@ class MatplotlibWidget(Canvas):
     def minimumSizeHint(self):
         return QSize(10, 10)
 
-
-
-#===============================================================================
-#   Example
-#===============================================================================
+# =============================================================================
+#   Example - Part 2 : Import MatplotlibWidget in PyQt Application
+# =============================================================================
 if __name__ == '__main__':
-    import sys
-    from PyQt4.QtGui import QMainWindow, QApplication
     from numpy import linspace
-    
+
     class ApplicationWindow(QMainWindow):
         def __init__(self):
             QMainWindow.__init__(self)
@@ -112,13 +139,16 @@ if __name__ == '__main__':
             self.mplwidget.setFocus()
             self.setCentralWidget(self.mplwidget)
             self.plot(self.mplwidget.axes)
-            
+
         def plot(self, axes):
             x = linspace(-10, 10)
             axes.plot(x, x**2)
             axes.plot(x, x**3)
-        
+
     app = QApplication(sys.argv)
     win = ApplicationWindow()
     win.show()
     sys.exit(app.exec_())
+# =============================================================================
+#   End Example - Part 2
+# =============================================================================

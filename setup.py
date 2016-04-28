@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """PyQt Designer Plugins"""
 
-from distutils.core import setup
+from setuptools import find_packages, setup, Extension
 import os
 import os.path as osp
 
